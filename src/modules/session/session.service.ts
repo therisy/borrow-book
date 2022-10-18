@@ -30,7 +30,7 @@ export class SessionService {
     });
   }
 
-  async verify(payload: any): Promise<any> {
+  async verify(payload: JwtPayload): Promise<UserDocument> {
     const timeDiff = payload.exp - Date.now() / 1000;
     if (timeDiff <= 0) throw new UnauthorizedException('Access token expired');
 

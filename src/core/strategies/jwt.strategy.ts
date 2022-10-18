@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  public validate(payload): Promise<User> {
+  public validate(payload: JwtPayload): Promise<UserDocument> {
     return this.sessionService.verify(payload);
   }
 }

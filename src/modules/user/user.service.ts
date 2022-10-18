@@ -43,14 +43,13 @@ export class UserService {
     });
   }
 
-  async getUserById(id: string): Promise<User> {
-    return this.model.findOne({ _id: id, freeze: { $ne: true } });
+  async getUserById(id: string): Promise<UserDocument> {
+    return this.model.findOne({ _id: id }, { password: 0 });
   }
 
-  async update(user: User, dto: UpdateUserDto): Promise<User> {
+  async update(user: User, dto: UpdateUserDto): Promise<UserDocument> {
     const exist = await this.model.findOne({
       username: dto.username,
-      freeze: { $ne: true },
     });
     if (exist && exist.id !== user.id)
       throw new ConflictException('Username already exists');

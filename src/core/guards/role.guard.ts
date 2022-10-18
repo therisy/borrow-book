@@ -13,12 +13,12 @@ export class RoleGuard implements CanActivate {
     const user: User = request.user;
     if (!user) return false;
 
-    let roles: RoleTypes = this.reflector.get<RoleTypes>(
-      'roles',
+    let role: RoleTypes = this.reflector.get<RoleTypes>(
+      'role',
       context.getHandler(),
     );
-    if (!roles) roles = RoleTypes.ADMIN;
+    if (!role) role = RoleTypes.ADMIN;
 
-    return roles <= user.role;
+    return role <= user.role;
   }
 }
