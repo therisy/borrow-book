@@ -6,17 +6,27 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import { HttpService } from '@nestjs/axios';
 import { User } from '@modules/user/etc/user.schema';
 import { CreateUserDto } from './etc/create-user.dto';
 import { RoleTypes } from '@enums/role.enum';
 import { UpdateUserDto } from '@modules/user/etc/update-user.dto';
+import CONFIG from '@config';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private readonly model: Model<User>) {}
+  constructor(
+    @InjectModel('User') private readonly model: Model<User>,
+    private readonly httpService: HttpService,
+  ) {}
 
   async create(dto: CreateUserDto): Promise<boolean> {
     dto.username = dto.username.toLowerCase();
+
+    /* in the comment line because there is no frontend at the moment
+     * const captchaValid = this.captchaValidator(dto.captcha);
+     * if (!captchaValid) throw new BadRequestException('Captcha not valid');
+     */
 
     const exist = await this.model.findOne({ username: dto.username });
     if (exist) throw new ConflictException('Username already exists');
@@ -78,5 +88,19 @@ export class UserService {
     await exist.save();
 
     return true;
+  }
+
+  async captchaValidator(captcha: string): Promise<boolean> {
+    const response = await this.httpService
+      .post(
+        CONFIG.HCAPTCHA_API,
+        `response=${captcha}&secret=${CONFIG.HCAPTCHA_SECRET}`,
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        },
+      )
+      .toPromise();
+
+    return response.data?.success;
   }
 }

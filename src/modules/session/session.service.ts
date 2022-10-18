@@ -22,6 +22,11 @@ export class SessionService {
     dto: CreateSessionDto,
     response: FastifyReply,
   ): Promise<boolean> {
+    /* in the comment line because there is no frontend at the moment
+     * const captchaValid = this.userService.captchaValidator(dto.captcha);
+     * if (!captchaValid) throw new BadRequestException('Captcha not valid');
+     */
+
     const user = await this.userService.getByUsernameAsAdmin(dto.username);
     if (!user) throw new NotFoundException('User not found');
 

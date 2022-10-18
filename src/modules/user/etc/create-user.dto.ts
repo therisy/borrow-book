@@ -11,4 +11,8 @@ export class CreateUserDto {
   @IsString()
   @Length(8, 70)
   password: string;
+
+  @ApiProperty()
+  @IsString()
+  captcha: string;
 }

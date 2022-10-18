@@ -10,6 +10,8 @@ interface Config {
   MONGO_URL: string;
   GOOGLE_API_KEY: string;
   REDIS_HOST: string;
+  HCAPTCHA_API: string;
+  HCAPTCHA_SECRET: string;
   DEV: boolean;
 }
 
@@ -22,6 +24,8 @@ const CONFIG: Config = {
   MONGO_URL: process.env.MONGO_URL,
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
   REDIS_HOST: process.env.REDIS_HOST,
+  HCAPTCHA_API: 'https://hcaptcha.com/siteverify',
+  HCAPTCHA_SECRET: process.env.HCAPTCHA_SECRET,
   DEV: process.env.NODE_ENV === 'development',
 };
 
