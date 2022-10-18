@@ -8,6 +8,7 @@ import * as morgan from 'morgan';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { NewrelicInterceptor } from '@interceptors/newrelic.interceptor';
+import fastifyCookie from '@fastify/cookie';
 import CONFIG from './config';
 
 async function bootstrap() {
@@ -17,6 +18,8 @@ async function bootstrap() {
   );
 
   app.useGlobalInterceptors(new NewrelicInterceptor());
+
+  await enableCookie(app);
 
   enableMorgan(app);
 
@@ -32,6 +35,12 @@ async function bootstrap() {
 bootstrap().then(() => {
   Logger.log(`Server is running on port ${CONFIG.PORT}`, 'Main');
 });
+
+async function enableCookie(app) {
+  await app.register(fastifyCookie, {
+    secret: 'my-secret', // for cookies signature
+  });
+}
 
 function enableSwagger(app) {
   if (CONFIG.DEV) {

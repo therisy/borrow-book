@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UserService } from '@modules/user/user.service';
 import { CreateSessionDto } from './etc/create-session.dto';
+import { FastifyReply } from 'fastify';
 
 @Injectable()
 export class SessionService {
@@ -17,17 +18,24 @@ export class SessionService {
     private readonly userService: UserService,
   ) {}
 
-  async create(dto: CreateSessionDto): Promise<string> {
+  async create(
+    dto: CreateSessionDto,
+    response: FastifyReply,
+  ): Promise<boolean> {
     const user = await this.userService.getByUsernameAsAdmin(dto.username);
     if (!user) throw new NotFoundException('User not found');
 
     const match = await bcrypt.compare(dto.password, user.password);
     if (!match) throw new NotFoundException('Password does not match');
 
-    return this.jwtService.sign({
+    const token = this.jwtService.sign({
       id: user._id,
       username: user.username,
     });
+
+    response.setCookie('access_token', token);
+
+    return true;
   }
 
   async verify(payload: JwtPayload): Promise<UserDocument> {

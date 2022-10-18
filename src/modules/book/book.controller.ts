@@ -3,9 +3,10 @@ import {
   Post,
   Body,
   UseGuards,
-  Query,
-  Param, Delete, Get
-} from "@nestjs/common";
+  Param,
+  Delete,
+  Get,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from '@decorators/role.decorator';
 import { RoleTypes } from '@enums/role.enum';

@@ -1,5 +1,5 @@
 'use strict';
-import CONFIG from "@config";
+import CONFIG from '@config';
 
 /**
  * New Relic agent configuration.
