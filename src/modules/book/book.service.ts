@@ -115,6 +115,6 @@ export class BookService {
 
     if (response.status === 200 && response.data && response.data.totalItems) {
       return response.data.items[0];
-    } else throw new NotFoundException('Book not found');
+    }
   }
 }
