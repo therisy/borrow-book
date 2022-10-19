@@ -12,6 +12,7 @@ import { isValidObjectId, PaginateModel } from 'mongoose';
 import { CreateBookDto } from '@modules/book/etc/create-book.dto';
 import { Book } from '@modules/book/etc/book.schema';
 import CONFIG from '@config';
+import mySplice from '../../core/utils/my-splice';
 
 @Injectable()
 export class BookService {
@@ -22,16 +23,26 @@ export class BookService {
   ) {}
 
   async getAll(page = 1) {
-    const books = await this.bookModel.paginate(
+    const books = await this.redisService.getClient('books').keys('book:*');
+
+    if (books.length) {
+      const cachedBooks = await this.redisService
+        .getClient('books')
+        .mget(books);
+
+      return mySplice(
+        cachedBooks.map((book) => JSON.parse(book)),
+        page,
+        10,
+      );
+    }
+
+    const paginateResult = await this.bookModel.paginate(
       {},
-      {
-        page: Number(page),
-        limit: 10,
-        sort: { createdAt: -1 },
-      },
+      { page, limit: 10 },
     );
 
-    return books;
+    return paginateResult;
   }
 
   async getById(id: string) {
