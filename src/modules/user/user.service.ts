@@ -23,7 +23,9 @@ export class UserService {
   async create(dto: CreateUserDto): Promise<boolean> {
     dto.username = dto.username.toLowerCase();
 
-    /* in the comment line because there is no frontend at the moment
+    /*
+      in the comment line because there is no frontend at the moment
+
      * const captchaValid = this.captchaValidator(dto.captcha);
      * if (!captchaValid) throw new BadRequestException('Captcha not valid');
      */
