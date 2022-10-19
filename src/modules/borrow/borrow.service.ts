@@ -8,13 +8,15 @@ import { InjectModel } from "@nestjs/mongoose";
 import { isValidObjectId, PaginateModel } from "mongoose";
 import { BookService } from "@modules/book/book.service";
 import { Borrow } from "@modules/borrow/etc/borrow.schema";
+import { ReturnBorrowDto } from "@modules/borrow/etc/return-borrow.dto";
 
 @Injectable()
 export class BorrowService {
   constructor(
     @InjectModel("Borrow") private readonly model: PaginateModel<Borrow>,
     private readonly bookService: BookService
-  ) {}
+  ) {
+  }
 
   async getAll(page = 1, user: string, returned: string) {
     const queryObject = {};
@@ -64,6 +66,9 @@ export class BorrowService {
     if (valid)
       throw new ConflictException("You already have a book from another user");
 
+    const hasRead = await this.hasRead(user._id, book._id);
+    if (hasRead) throw new ConflictException("You already read this book");
+
     const borrow = new this.model({
       book: book._id,
       user: user._id,
@@ -76,15 +81,31 @@ export class BorrowService {
     return true;
   }
 
-  async deleteBorrow(book, user: UserDocument) {
+  async returnBorrow(dto: ReturnBorrowDto, book, user: UserDocument) {
     if (!isValidObjectId(book)) throw new BadRequestException("Invalid id");
 
     const borrow = await this.model.findOne({ user: user._id, book, returned: false });
     if (!borrow) throw new NotFoundException("Borrow not found");
 
-    await borrow.delete();
+    await borrow.updateOne({
+      returned: true,
+      score: dto.score
+    });
 
     return true;
+  }
+
+  async hasRead(user: string, book: string): Promise<boolean> {
+    if (!isValidObjectId(user)) throw new BadRequestException("Invalid User id");
+    if (!isValidObjectId(book)) throw new BadRequestException("Invalid Book id");
+
+    const borrow = await this.model.findOne({
+      user: user,
+      book: book,
+      returned: true
+    });
+
+    return !!borrow;
   }
 
   async hasBookFromAnotherUser(

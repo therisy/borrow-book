@@ -8,15 +8,10 @@ import * as mongoosePaginate from 'mongoose-paginate-v2';
 })
 export class Borrow extends Document {
   @Prop({ required: true, ref: 'User', type: mongoose.Schema.Types.ObjectId })
-  user: string;
+  user: mongoose.Schema.Types.ObjectId;
 
-  @Prop({
-    required: true,
-    unique: true,
-    ref: 'Book',
-    type: mongoose.Schema.Types.ObjectId,
-  })
-  book: string;
+  @Prop({ required: true, ref: 'Book', unique: false, type: mongoose.Schema.Types.ObjectId })
+  book: mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: false, default: false })
   returned: boolean;

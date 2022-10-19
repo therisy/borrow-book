@@ -44,7 +44,7 @@ export class Book extends Document {
   smallThumbnail: string;
 
   @Prop({ required: true, ref: 'User', type: mongoose.Schema.Types.ObjectId })
-  creator: string;
+  creator: mongoose.Schema.Types.ObjectId;
 
   @Prop()
   createdAt: number;

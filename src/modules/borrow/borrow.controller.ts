@@ -1,4 +1,15 @@
-import { Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseBoolPipe,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards
+} from "@nestjs/common";
 import { ApiTags } from '@nestjs/swagger';
 import { BorrowService } from '@modules/borrow/borrow.service';
 import { RoleGuard } from '@guards/role.guard';
@@ -6,6 +17,7 @@ import { JwtGuard } from '@guards/jwt.guard';
 import { Role } from '@decorators/role.decorator';
 import { RoleTypes } from '@enums/role.enum';
 import { User } from '@decorators/user.decorator';
+import { ReturnBorrowDto } from "@modules/borrow/etc/return-borrow.dto";
 
 @Controller('borrow')
 @ApiTags('Borrow')
@@ -33,8 +45,12 @@ export class BorrowController {
   @UseGuards(JwtGuard, RoleGuard)
   @Role(RoleTypes.USER)
   @Delete(':id')
-  async deleteBorrow(@Param('id') id: string, @User() user: UserDocument) {
-    return this.borrowService.deleteBorrow(id, user);
+  async returnBorrow(
+    @Body() dto: ReturnBorrowDto,
+    @Param('id') id: string,
+    @User() user: UserDocument
+  ) {
+    return this.borrowService.returnBorrow(dto, id, user);
   }
 
   /* ADMIN ROUTES */
