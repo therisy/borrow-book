@@ -8,17 +8,31 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpService } from '@nestjs/axios';
 import { RedisService } from 'nestjs-redis';
-import { isValidObjectId } from 'mongoose';
+import { isValidObjectId, PaginateModel } from 'mongoose';
 import { CreateBookDto } from '@modules/book/etc/create-book.dto';
+import { Book } from '@modules/book/etc/book.schema';
 import CONFIG from '@config';
 
 @Injectable()
 export class BookService {
   constructor(
-    @InjectModel('Book') private readonly bookModel,
+    @InjectModel('Book') private readonly bookModel: PaginateModel<Book>,
     private httpService: HttpService,
     private redisService: RedisService,
   ) {}
+
+  async getAll(page = 1) {
+    const books = await this.bookModel.paginate(
+      {},
+      {
+        page: Number(page),
+        limit: 10,
+        sort: { createdAt: -1 },
+      },
+    );
+
+    return books;
+  }
 
   async getById(id: string) {
     if (!isValidObjectId(id)) throw new BadRequestException('Invalid id');

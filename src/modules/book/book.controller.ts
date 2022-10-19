@@ -5,8 +5,8 @@ import {
   UseGuards,
   Param,
   Delete,
-  Get,
-} from '@nestjs/common';
+  Get, Query
+} from "@nestjs/common";
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from '@decorators/role.decorator';
 import { RoleTypes } from '@enums/role.enum';
@@ -20,6 +20,11 @@ import { CreateBookDto } from '@modules/book/etc/create-book.dto';
 @ApiTags('Book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
+
+  @Get()
+  async getAll(@Query('page') page: number) {
+    return await this.bookService.getAll(page);
+  }
 
   @Get(':id')
   async getById(@Param('id') id: string) {

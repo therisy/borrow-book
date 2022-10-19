@@ -12,7 +12,7 @@ export class CreateSessionDto {
   @Length(8, 70)
   password: string;
 
-  @ApiProperty()
-  @IsString()
-  captcha: string;
+  // @ApiProperty()
+  // @IsString()
+  // captcha: string;
 }
