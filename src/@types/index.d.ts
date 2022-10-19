@@ -15,4 +15,13 @@ declare global {
     createdAt: number;
     updatedAt: number;
   }
+
+  interface BookDocument {
+    user: string;
+    book: string;
+    returned: boolean;
+    score: number;
+    createdAt: number;
+    updatedAt: number;
+  }
 }

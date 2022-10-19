@@ -5,6 +5,7 @@ import { UserModule } from '@modules/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SessionModule } from '@modules/session/session.module';
 import { BookModule } from '@modules/book/book.module';
+import { BorrowModule } from '@modules/borrow/borrow.module';
 import CONFIG from './config';
 
 @Module({
@@ -18,6 +19,7 @@ import CONFIG from './config';
     UserModule,
     SessionModule,
     BookModule,
+    BorrowModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -5,8 +5,9 @@ import {
   UseGuards,
   Param,
   Delete,
-  Get, Query
-} from "@nestjs/common";
+  Get,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from '@decorators/role.decorator';
 import { RoleTypes } from '@enums/role.enum';

@@ -38,7 +38,9 @@ export class SessionService {
       username: user.username,
     });
 
-    response.setCookie('access_token', token);
+    response.setCookie('access_token', token, {
+      httpOnly: true, // prevent client side access
+    });
 
     return true;
   }

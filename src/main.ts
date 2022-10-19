@@ -19,15 +19,15 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new NewrelicInterceptor());
 
+  initializeValidationPipe(app);
+
+  initializeSwagger(app);
+
   await enableCookie(app);
 
-  enableMorgan(app);
-
-  enablePipeline(app);
+  initializeMorgan(app);
 
   enableCors(app);
-
-  enableSwagger(app);
 
   await app.listen(CONFIG.PORT, '0.0.0.0');
 }
@@ -42,7 +42,7 @@ async function enableCookie(app) {
   });
 }
 
-function enableSwagger(app) {
+function initializeSwagger(app) {
   if (CONFIG.DEV) {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('Borrow a Book')
@@ -71,20 +71,20 @@ function enableCors(app) {
   });
 }
 
-function enablePipeline(app) {
+function initializeValidationPipe(app) {
   app.useGlobalPipes(
     new ValidationPipe({
       // disableErrorMessages: true,
       transform: true,
       whitelist: true, // Delete properties which is not in dto
       forbidNonWhitelisted: true,
-      forbidUnknownValues: true,
+      forbidUnknownValues: false,
       // skipMissingProperties: true,
     }),
   );
 }
 
-function enableMorgan(app) {
+function initializeMorgan(app) {
   app.use(
     morgan(':remote-addr :url :method :req[origin] :status :response-time ms'),
   );

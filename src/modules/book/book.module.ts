@@ -12,5 +12,6 @@ import { BookSchema } from '@modules/book/etc/book.schema';
   ],
   controllers: [BookController],
   providers: [BookService],
+  exports: [BookService],
 })
 export class BookModule {}
